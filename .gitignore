@@ -1,0 +1,13 @@
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Env
+.env
+
+# Vite/React build
+frontend/dist
+
+# Logs
+*.log
