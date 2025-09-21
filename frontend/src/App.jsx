@@ -1,56 +1,49 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Upload from "./components/Upload";
-import FileList from "./components/FileList";
-
+import FacultyPage from "./components/FacultyPage";
+import "./index.css";
 function App() {
   return (
     <Router>
-      <div style={{ padding: "20px", fontFamily: "Arial" }}>
-        <h1>📦 AWS S3 File Storage</h1>
-        
-        {/* Navigation */}
-        <nav style={{ marginBottom: "20px" }}>
-          <Link to="/student" style={{ marginRight: "10px" }}>👨‍🎓 Student</Link>
-          <Link to="/faculty">👩‍🏫 Faculty</Link>
-        </nav>
+      <div className="flex min-h-screen bg-gray-100">
+        {/* Sidebar */}
+        <aside className="w-64 bg-blue-800 text-white flex flex-col p-6">
+          <h1 className="text-2xl font-bold mb-8">📦 S3 Portal</h1>
+          <nav className="space-y-4">
+            <Link
+              to="/student"
+              className="block px-3 py-2 rounded hover:bg-blue-600 transition"
+            >
+              👨‍🎓 Student Upload
+            </Link>
+            <Link
+              to="/faculty"
+              className="block px-3 py-2 rounded hover:bg-blue-600 transition"
+            >
+              👩‍🏫 Faculty Files
+            </Link>
+          </nav>
+        </aside>
 
-        <Routes>
-          {/* Home route */}
-          <Route path="/" element={<p>Please choose a role above.</p>} />
-
-          {/* Student route */}
-          <Route path="/student" element={<Upload onUploadSuccess={() => {}} />} />
-
-          {/* Faculty route */}
-          <Route path="/faculty" element={<FacultyPage />} />
-        </Routes>
+        {/* Main Content */}
+        <main className="flex-1 p-8">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <div className="text-center text-gray-600 text-lg">
+                  Select a role from the sidebar to continue.
+                </div>
+              }
+            />
+            <Route path="/student" element={<Upload onUploadSuccess={() => {}} />} />
+            <Route path="/faculty" element={<FacultyPage />} />
+          </Routes>
+        </main>
       </div>
     </Router>
   );
-}
-
-// Faculty Page wrapper with file fetching
-import axios from "axios";
-import { useState, useEffect } from "react";
-
-function FacultyPage() {
-  const [files, setFiles] = useState([]);
-
-  const fetchFiles = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/faculty/files");
-      setFiles(res.data);
-    } catch (err) {
-      console.error("Error fetching files:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchFiles();
-  }, []);
-
-  return <FileList files={files} refreshFiles={fetchFiles} />;
 }
 
 export default App;
