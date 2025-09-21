@@ -11,12 +11,12 @@ function Upload({ onUploadSuccess }) {
     formData.append("file", file);
 
     try {
-      await axios.post("http://localhost:5000/upload", formData, {
+      await axios.post("http://localhost:5000/student/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("✅ File uploaded successfully!");
       setFile(null);
-      onUploadSuccess(); // refresh files in App.jsx
+      onUploadSuccess();
     } catch (err) {
       console.error("Upload failed:", err);
       alert("❌ Upload failed");

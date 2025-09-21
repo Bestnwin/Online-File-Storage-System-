@@ -4,9 +4,9 @@ import axios from "axios";
 function FileList({ files, refreshFiles }) {
   const handleDownload = async (filename) => {
     try {
-      const res = await axios.get(`http://localhost:5000/download/${filename}`);
+      const res = await axios.get(`http://localhost:5000/faculty/download/${filename}`);
       const downloadUrl = res.data.downloadUrl;
-      window.open(downloadUrl, "_blank"); // open in new tab
+      window.open(downloadUrl, "_blank");
     } catch (err) {
       console.error("Download failed:", err);
       alert("❌ Download failed");

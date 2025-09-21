@@ -1,15 +1,45 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Upload from "./components/Upload";
 import FileList from "./components/FileList";
 
 function App() {
+  return (
+    <Router>
+      <div style={{ padding: "20px", fontFamily: "Arial" }}>
+        <h1>📦 AWS S3 File Storage</h1>
+        
+        {/* Navigation */}
+        <nav style={{ marginBottom: "20px" }}>
+          <Link to="/student" style={{ marginRight: "10px" }}>👨‍🎓 Student</Link>
+          <Link to="/faculty">👩‍🏫 Faculty</Link>
+        </nav>
+
+        <Routes>
+          {/* Home route */}
+          <Route path="/" element={<p>Please choose a role above.</p>} />
+
+          {/* Student route */}
+          <Route path="/student" element={<Upload onUploadSuccess={() => {}} />} />
+
+          {/* Faculty route */}
+          <Route path="/faculty" element={<FacultyPage />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+// Faculty Page wrapper with file fetching
+import axios from "axios";
+import { useState, useEffect } from "react";
+
+function FacultyPage() {
   const [files, setFiles] = useState([]);
-  const [role, setRole] = useState(null); // Student or Faculty
 
   const fetchFiles = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/files");
+      const res = await axios.get("http://localhost:5000/faculty/files");
       setFiles(res.data);
     } catch (err) {
       console.error("Error fetching files:", err);
@@ -17,43 +47,10 @@ function App() {
   };
 
   useEffect(() => {
-    if (role === "Faculty") {
-      fetchFiles(); // only fetch for faculty
-    }
-  }, [role]);
+    fetchFiles();
+  }, []);
 
-  return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <h1>📦 AWS S3 File Storage</h1>
-
-      {/* Role Selection */}
-      {!role && (
-        <div>
-          <h3>Login as:</h3>
-          <button onClick={() => setRole("Student")} style={{ marginRight: "10px" }}>
-            👨‍🎓 Student
-          </button>
-          <button onClick={() => setRole("Faculty")}>👩‍🏫 Faculty</button>
-        </div>
-      )}
-
-      {/* Student View */}
-      {role === "Student" && (
-        <div>
-          <h2>Welcome, Student 👨‍🎓</h2>
-          <Upload onUploadSuccess={() => {}} />
-        </div>
-      )}
-
-      {/* Faculty View */}
-      {role === "Faculty" && (
-        <div>
-          <h2>Welcome, Faculty 👩‍🏫</h2>
-          <FileList files={files} refreshFiles={fetchFiles} />
-        </div>
-      )}
-    </div>
-  );
+  return <FileList files={files} refreshFiles={fetchFiles} />;
 }
 
 export default App;
