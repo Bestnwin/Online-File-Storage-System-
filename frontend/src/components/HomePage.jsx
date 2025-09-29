@@ -1,53 +1,69 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+// src/components/HomePage.jsx
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-function HomePage() {
-  const navigate = useNavigate();
+export default function HomePage() {
+  const [text, setText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+  const fullText = "Welcome to File Share Hub"; // ✅ fixed text
+
+  // Typing animation using slice (no undefined issue)
+  useEffect(() => {
+    let index = 0;
+    const t = setInterval(() => {
+      setText(fullText.slice(0, index + 1));
+      index++;
+      if (index === fullText.length) clearInterval(t);
+    }, 120);
+    return () => clearInterval(t);
+  }, []);
+
+  // Cursor blink
+  useEffect(() => {
+    const blink = setInterval(() => setShowCursor((s) => !s), 500);
+    return () => clearInterval(blink);
+  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center px-6">
-      <motion.h1
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-5xl font-extrabold mb-6"
-      >
-        📦 Welcome to S3 File Storage Portal
-      </motion.h1>
+    <div className="min-h-screen bg-black text-green-400 font-mono flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-4xl px-6 py-10 rounded-lg border border-green-800/40 bg-black/60 shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+        {/* big terminal style title */}
+        <h1 className="text-3xl md:text-4xl text-green-400 leading-snug select-none">
+          <span className="opacity-95">{text}</span>
+          {showCursor && <span className="ml-1 animate-blink">|</span>}
+        </h1>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-        className="text-xl mb-10 max-w-2xl"
-      >
-        Upload assignments securely as a student or access uploaded files as a faculty member.
-      </motion.p>
+        <p className="mt-4 text-sm text-green-300/90 select-none">
+          Select your role to continue...
+        </p>
 
-      <div className="flex gap-8">
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => navigate("/student")}
-          className="bg-white text-blue-700 w-64 h-44 flex flex-col justify-center items-center rounded-lg shadow-lg cursor-pointer"
-        >
-          <h2 className="text-2xl font-bold">👨‍🎓 Student</h2>
-          <p className="text-gray-600">Upload Assignments</p>
-        </motion.div>
+        {/* command-like options */}
+        <div className="mt-8 flex flex-col md:flex-row gap-4">
+          {/* Student */}
+          <Link
+            to="/student"
+            className="block px-5 py-3 border border-green-700 rounded-md bg-black/70 
+                       transition transform shadow-inner
+                       hover:scale-105 hover:shadow-[0_0_15px_rgba(34,197,94,0.8)]
+                       hover:border-green-400 hover:text-green-100"
+          >
+            <span className="text-green-300 text-sm">&gt; </span>
+            <span className="text-green-200 font-medium ml-2">login --student</span>
+          </Link>
 
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => navigate("/faculty")}
-          className="bg-white text-green-700 w-64 h-44 flex flex-col justify-center items-center rounded-lg shadow-lg cursor-pointer"
-        >
-          <h2 className="text-2xl font-bold">👩‍🏫 Faculty</h2>
-          <p className="text-gray-600">View & Download Files</p>
-        </motion.div>
+          {/* Faculty */}
+          <Link
+            to="/faculty"
+            className="block px-5 py-3 border border-green-700 rounded-md bg-black/70 
+                       transition transform shadow-inner
+                       hover:scale-105 hover:shadow-[0_0_15px_rgba(34,197,94,0.8)]
+                       hover:border-green-400 hover:text-green-100"
+          >
+            <span className="text-green-300 text-sm">&gt; </span>
+            <span className="text-green-200 font-medium ml-2">login --faculty</span>
+          </Link>
+        </div>
       </div>
     </div>
   );
 }
-
-export default HomePage;
